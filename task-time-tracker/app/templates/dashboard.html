@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h2 class="mb-4">Your Tasks</h2>
+
+  <!--Task Form-->
+  <form method="POST" action="/create-task" class="row g-3 mb-4">
+    <div class="col-md-6">
+      <input type="text" name="name" class="form-control" placeholder="Task name" required>
+    </div>
+    <div class="col-md-6">
+      <input type="text" name="notes" class="form-control" placeholder="Notes">
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-success">Add Task</button>
+    </div>
+  </form>
+
+  <!-- Task List-->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Notes</th>
+        <th>Status</th>
+        <th>Duration</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr>
+        <td>{{ task.name }}</td>
+        <td>{{ task.notes }}</td>
+        <td><span class="badge bg-info">{{ task.status }}</span></td>
+        <td>{{ task.duration or "" }}</td>
+        <td>
+          <a href="/tasks/{{ task.id }}/start" class="btn btn-sm btn-primary">Start</a>
+          <a href="/tasks/{{ task.id }}/stop" class="btn btn-sm btn-warning">Stop</a>
+          <a href="/tasks/{{ task.id }}/delete" class="btn btn-sm btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table> 
+{% endblock %}

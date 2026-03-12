@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+  <div class="container py-5">
+    <h2 class="mb-4">User Profile</h2>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.username }}</h5>
+        <p class="card-text">User ID: {{ user.id }}</p>
+        <p class="card-text">Total Tasks: {{ tasks|length }}</p>
+        <p class="card-text text-success">Completed: {{ stats.completed }}</p>
+        <p class="card-text text-warning">In Progress: {{ stats.started }}</p>
+        <p class="card-text text-secondary">Pending: {{ stats.progress }}</p>
+      </div>
+    </div>
+
+    <h3 class="mb-3">Your Tasks</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Notes</th>
+          <th>Status</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td>{{ task.name }}</td>
+          <td>{{ task.notes }}</td>
+          <td><span class="badge bg-info">{{ task.status }}</span></td>
+          <td>{{ task.duration or "" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
