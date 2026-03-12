@@ -16,7 +16,7 @@ def register_user():
         db.session.add(user)
         db.session.commit()
         flash("Registration Successful, Please Login")
-        return redirect(url_for("routes-bp.login.html"))
+        return redirect(url_for("routes-bp.login"))
     return render_template("register.html")
 
 @bp.route("/login", methods=["GET","POST"])
@@ -103,4 +103,5 @@ def stop_task(task_id):
 def logout():
     session.clear()
     flash("Logged out successfully", "info")
+
     return redirect(url_for("routes-bp.login"))
