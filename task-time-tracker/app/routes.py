@@ -6,6 +6,10 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 bp = Blueprint("routes-bp", __name__)
 
+@bp.route("/")
+def home():
+    return redirect(url_for("routes-bp.login"))
+
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method =="POST":
@@ -42,17 +46,21 @@ def dashboard():
     return render_template("dashboard.html", tasks=tasks)
 
 @bp.route("/profile")
-@jwt_required()
 def profile():
-    current_user= get_jwt_identity()
+    current_user = session.get("user_id")
+    if not current_user:
+        flash("Please log in first")
+        return redirect(url_for("routes-bp.login"))
+
     user = User.query.get_or_404(current_user)
     tasks = Task.query.filter_by(user_id=current_user).all()
 
     stats = {
         "total": len(tasks),
         "Completed": sum(1 for t in tasks if t.status == TaskStatus.COMPLETED),
-        "started": sum(1 for t in tasks if t.status == TaskStatus.STARTED),
-        "In-progress": sum(1 for t in tasks if t.status == TaskStatus.PROGRESS),  
+        "Started": sum(1 for t in tasks if t.status == TaskStatus.STARTED),
+        "In-Progress": sum(1 for t in tasks if t.status == TaskStatus.PROGRESS),
+        "Ready-to-go": sum(1 for t in tasks if t.status == TaskStatus.READY),
     }
 
     return render_template("profile.html", user=user, tasks=tasks, stats=stats)
@@ -70,7 +78,7 @@ def create_task():
         flash("Task name is required", "danger")
         return redirect(url_for("routes-bp.dashboard"))
 
-    task = Task(name=name, notes=notes, user_id=current_user)
+    task = Task(name=name, notes=notes, user_id=current_user, status=TaskStatus.READY)
     db.session.add(task)
     db.session.commit()
     flash("Task created successfully", "success")

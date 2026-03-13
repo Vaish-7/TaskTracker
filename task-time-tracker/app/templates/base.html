@@ -9,23 +9,39 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('routes-bp.dashboard') }}">Time Tracker</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    {% if session.get('jwt') %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes-bp.profile') }}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes-bp.logout') }}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes-bp.login') }}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('routes-bp.register') }}">Register</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('routes-bp.dashboard') }}">Time Tracker</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            {% if session.get('user_id') %}
+                <!-- Show when logged in -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('routes-bp.dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('routes-bp.profile') }}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('routes-bp.logout') }}">Logout</a>
+                </li>
+                {% else %}
+                <!-- Show when logged out -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('routes-bp.login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('routes-bp.register') }}">Register</a>
+                </li>
+                {% endif %}
+        </ul>
+    </div>
+  </div>
+</nav>
     <div class="container py-4">
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}

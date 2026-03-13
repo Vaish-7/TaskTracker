@@ -34,5 +34,4 @@ class Task(db.Model):
     end_time = db.Column(db.DateTime, nullable=True)
     duration = db.Column(db.Integer, nullable=True)
     status = db.Column(db.Enum(TaskStatus), nullable=False, default=TaskStatus.READY)
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

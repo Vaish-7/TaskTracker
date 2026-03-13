@@ -4,7 +4,7 @@
   <h2 class="mb-4">Your Tasks</h2>
 
   <!--Task Form-->
-  <form method="POST" action="/create-task" class="row g-3 mb-4">
+  <form method="POST" action="{{ url_for('routes-bp.create_task') }}" class="row g-3 mb-4">
     <div class="col-md-6">
       <input type="text" name="name" class="form-control" placeholder="Task name" required>
     </div>
@@ -29,17 +29,56 @@
     </thead>
     <tbody>
       {% for task in tasks %}
-      <tr>
-        <td>{{ task.name }}</td>
-        <td>{{ task.notes }}</td>
-        <td><span class="badge bg-info">{{ task.status }}</span></td>
-        <td>{{ task.duration or "" }}</td>
-        <td>
-          <a href="/tasks/{{ task.id }}/start" class="btn btn-sm btn-primary">Start</a>
-          <a href="/tasks/{{ task.id }}/stop" class="btn btn-sm btn-warning">Stop</a>
-          <a href="/tasks/{{ task.id }}/delete" class="btn btn-sm btn-danger">Delete</a>
-        </td>
-      </tr>
+        <tr>
+          <td>{{ task.name }}</td>
+          <td>{{ task.notes }}</td>
+          <td>
+            {% if task.status == 'Completed' %}
+              <span class="badge bg-success">Completed</span>
+            {% elif task.status == 'Started' %}
+              <span class="badge bg-warning text-dark">Started</span>
+            {% elif task.status == 'In-Progress' %}
+              <span class="badge bg-info text-dark">In-Progress</span>
+            {% elif task.status == 'Ready-to-go' %}
+              <span class="badge bg-secondary">Ready-to-go</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if task.duration %}
+              {{ task.duration }} seconds
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <!-- Start button -->
+              <form action="{{ url_for('routes-bp.start_task', task_id=task.id) }}" method="post">
+                <button type="submit" class="btn btn-success btn-sm"
+                        {% if task.status not in ['Ready-to-go','Completed'] %}disabled{% endif %}>
+                  Start
+                </button>
+              </form>
+
+              <!-- Stop button -->
+              <form action="{{ url_for('routes-bp.stop_task', task_id=task.id) }}" method="post">
+                <button type="submit" class="btn btn-warning btn-sm"
+                        {% if task.status not in ['Started','In-Progress'] %}disabled{% endif %}>
+                  Stop
+                </button>
+              </form>
+
+              <!-- Delete button -->
+              <form action="{{ url_for('routes-bp.delete_task', task_id=task.id) }}" method="post">
+                <button type="submit" class="btn btn-danger btn-sm"
+                        {% if task.status in ['Started','In-Progress'] %}disabled{% endif %}>
+                  Delete
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+
       {% endfor %}
     </tbody>
   </table> 
